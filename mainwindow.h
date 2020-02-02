@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QGraphicsScene>
 #include <QGraphicsTextItem>
+#include <QThread>
 #include <cmath>
 
 QT_BEGIN_NAMESPACE
@@ -51,6 +52,7 @@ private:
     potok *a;
     potok *b;
     potok *c;
+    bool onl;
 };
 
 #endif // MAINWINDOW_H

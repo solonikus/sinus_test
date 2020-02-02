@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "task.h"
+#include <fstream>
 
 void init_potok(potok *a, double p)
 {
@@ -35,6 +37,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->doubleSpinBox->setValue(3);
     ui->doubleSpinBox_2->setValue(1);
     ui->doubleSpinBox_3->setValue(1);
+
+    this->onl = false;
 }
 
 void MainWindow::init_scene()
@@ -120,6 +124,8 @@ void MainWindow::on_checkBox_clicked()
     }
     else
         a->enable = true;
+    if (this->onl == true)
+        on_pushButton_clicked();
 }
 
 void MainWindow::on_checkBox_2_clicked()
@@ -128,6 +134,8 @@ void MainWindow::on_checkBox_2_clicked()
         b->enable = false;
     else
         b->enable = true;
+    if (this->onl == true)
+        on_pushButton_clicked();
 }
 
 void MainWindow::on_checkBox_3_clicked()
@@ -136,24 +144,68 @@ void MainWindow::on_checkBox_3_clicked()
         c->enable = false;
     else
         c->enable = true;
+    if (this->onl == true)
+        on_pushButton_clicked();
 }
 
 void MainWindow::on_doubleSpinBox_valueChanged(double arg1)
 {
     this->a->pt=arg1;
+    if (this->onl == true)
+        on_pushButton_clicked();
 }
 
 void MainWindow::on_doubleSpinBox_2_valueChanged(double arg1)
 {
     this->b->pt=arg1;
+    if (this->onl == true)
+        on_pushButton_clicked();
 }
 
 void MainWindow::on_doubleSpinBox_3_valueChanged(double arg1)
 {
     this->c->pt=arg1;
+    if (this->onl == true)
+        on_pushButton_clicked();
 }
 
 void MainWindow::on_checkBox_4_stateChanged(int arg1)
 {
+    QThread* thread = nullptr;
+    task* tsk = nullptr;
 
+    if (arg1 == 2)
+    {
+        thread = new QThread( );
+        tsk = new task();
+
+        // move the task object to the thread BEFORE connecting any signal/slots
+        tsk->moveToThread(thread);
+
+        connect(thread, SIGNAL(started()), tsk, SLOT(doWork()));
+        connect(tsk, SIGNAL(workFinished()), thread, SLOT(quit()));
+
+        // automatically delete thread and task object when work is done:
+        connect(tsk, SIGNAL(workFinished()), tsk, SLOT(deleteLater()));
+        connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+
+        thread->start();
+    }
+    else
+    {
+        if (thread && thread->isRunning() == true)
+            thread->quit();
+        if (thread != nullptr)
+            delete thread;
+        if (tsk != nullptr)
+            delete tsk;
+    }
+//    if (arg1 == 0)
+//    {
+//        this->onl = false;
+//    }
+//    else
+//    {
+//        this->onl = true;
+//    }
 }

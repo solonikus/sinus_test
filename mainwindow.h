@@ -6,6 +6,7 @@
 #include <QGraphicsTextItem>
 #include <QThread>
 #include <cmath>
+#include "task.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -28,7 +29,7 @@ public:
     void init_scene();
 
     friend void draw(MainWindow &main);
-
+    MainWindow* getmw(){return this;}
 private slots:
     void on_pushButton_clicked();
 
@@ -53,6 +54,8 @@ private:
     potok *b;
     potok *c;
     bool onl;
+    QThread *thr;
+    task *dt;
 };
 
 #endif // MAINWINDOW_H

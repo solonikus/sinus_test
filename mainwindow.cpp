@@ -135,12 +135,16 @@ void writefile(potok &a, potok &b, potok &c)
     //Запись в файл текущих потоков
     if (a.enable == true)
         fout << "A:" << a.pt << ";";
+    else
+        fout << "A:x;";
     if (b.enable == true)
         fout << "B:" << b.pt << ";";
+    else
+        fout << "B:x;";
     if (c.enable == true)
         fout << "C:" << c.pt << ";";
-    if (a.enable == false && b.enable == false && c.enable == false)
-        fout << "x";
+    else
+        fout << "C:x;";
     fout << std::endl;
     fout.close();                          // закрываем файл
 }
